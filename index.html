@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>语音识别</title>
+
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        #dialogBox {
+            width: 50%;
+            height: 30%;
+            background-color: black;
+            border: none;
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 5em;  /* Adjusted the size to 2.5 times of the original */
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <pre id="dialogBox"></pre>
+
+    <script>
+        window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        const recognition = new SpeechRecognition();
+        recognition.interimResults = true;
+        recognition.lang = 'zh-CN';
+
+        let dialogBox = document.querySelector('#dialogBox');
+
+        recognition.addEventListener('result', e => {
+            const transcript = Array.from(e.results)
+                .map(result => result[0])
+                .map(result => result.transcript)
+                .join('');
+
+            if (transcript.includes('小黑')) {
+                fadeInText('晚上好，先生');
+            } else if (transcript.includes('明天天气怎么样')) {
+                fadeInText('10月27日武汉市24°-17°大部分地区多云');
+            } else if (transcript.includes('背一句古诗')) {
+                fadeInText('从此无心爱良夜，任他明月下西楼');
+            } else if (transcript.includes('你的心情怎么样')) {
+                fadeInText('(❤ ω ❤)我很开心！');  /* Replaced the emoji */
+            }
+        });
+
+        recognition.addEventListener('end', recognition.start);
+
+        recognition.start();
+
+        function fadeInText(text) {
+            dialogBox.textContent = text;
+            dialogBox.style.opacity = '1';
+            setTimeout(() => {
+                fadeOutText();
+            }, 2000); // Adjust the delay time as needed
+        }
+
+        function fadeOutText() {
+            dialogBox.style.opacity = '0';
+            setTimeout(() => {
+                clearText();
+            }, 1000); // After fade out, clear the text
+        }
+
+        function clearText() {
+            dialogBox.textContent = '';
+        }
+    </script>
+</body>
+</html>
