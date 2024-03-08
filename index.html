@@ -8,8 +8,8 @@
             background-color: black;
             color: white;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: flex-start;
+            align-items: flex-start;
             height: 100vh;
             margin: 0;
             padding: 0;
@@ -17,7 +17,7 @@
         }
 
         #dialogBox {
-            width: 50%;
+            width: 60%;
             height: 30%;
             background-color: black;
             border: none;
@@ -27,14 +27,38 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            font-size: 5em;  /* Adjusted the size to 2.5 times of the original */
+            font-size: 3.5em;  /* Adjusted the size */
             opacity: 0;
-            transition: opacity 1s ease-in-out;
+            transition: opacity 0.5s ease-in-out; /* Reduced the transition time */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #currentTime, #calendar {
+            position: absolute;
+            color: white;
+            font-size: 40px; /* Adjusted the size */
+        }
+
+        #currentTime {
+            top: 10px;
+            left: 10px;
+            transition: opacity 0.5s ease-in-out; /* Reduced the transition time */
+        }
+
+        #calendar {
+            top: 70px;
+            left: 10px;
+            transition: opacity 0.5s ease-in-out; /* Reduced the transition time */
         }
     </style>
 </head>
 <body>
     <pre id="dialogBox"></pre>
+    <div id="currentTime"></div>
+    <div id="calendar"></div>
 
     <script>
         window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -44,6 +68,32 @@
         recognition.lang = 'zh-CN';
 
         let dialogBox = document.querySelector('#dialogBox');
+        let currentTimeElement = document.querySelector('#currentTime');
+        let calendarElement = document.querySelector('#calendar');
+
+        // Function to display current time
+        function displayCurrentTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            currentTimeElement.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        // Function to display current date
+        function displayCurrentDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            calendarElement.textContent = `${year}-${month}-${day}`;
+        }
+
+        // Update time and date every second
+        setInterval(displayCurrentTime, 500); // Reduced the interval time
+        setInterval(displayCurrentDate, 500); // Reduced the interval time
+        displayCurrentTime(); // Display time initially
+        displayCurrentDate(); // Display date initially
 
         recognition.addEventListener('result', e => {
             const transcript = Array.from(e.results)
@@ -53,16 +103,23 @@
 
             if (transcript.includes('小黑')) {
                 fadeInText('上午好，先生');
-            } else if (transcript.includes('明天天气如何')) {
+            } else if (transcript.includes('明天天气怎么样')) {
                 fadeInText('3月10日武汉市6°-14°部分地区多云');
-            } else if (transcript.includes('今天天天气如何')) {
+            } else if (transcript.includes('今天天天气怎么样')) {
                 fadeInText('3月9日武汉市6°-14°部分地区多云');
             } else if (transcript.includes('背一句古诗')) {
                 fadeInText('春风又绿江南岸，明月何时照我还。');
             } else if (transcript.includes('再背一句古诗')) {
-                fadeInText('从此无心爱良夜，任他明月下西楼');
+                fadeInText('从此无心爱良夜，任他明月下西楼。');
             } else if (transcript.includes('你的心情怎么样')) {
-                fadeInText('(❤ ω ❤)我很开心！');  /* Replaced the emoji */
+                fadeInText('(❤ ω ❤)我很开心！');
+            } else if (transcript.includes('我想了解武汉工程大学')) {
+                fadeInText('武汉工程大学创建于1972年，原名湖北化工石油学院，隶属湖北省。');
+            } else if (transcript.includes('给我的颜值打分')) {
+                const randomScore = Math.floor(Math.random() * 6) + 95;
+                fadeInText(`您的颜值分数为${randomScore}分`);
+            } else if (transcript.includes('我的精神怎么样')) {
+                fadeInText('您的精神看起来很好呢！');
             }
         });
 
