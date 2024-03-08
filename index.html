@@ -52,10 +52,14 @@
                 .join('');
 
             if (transcript.includes('小黑')) {
-                fadeInText('晚上好，先生');
-            } else if (transcript.includes('明天天气怎么样')) {
-                fadeInText('10月27日武汉市24°-17°大部分地区多云');
+                fadeInText('上午好，先生');
+            } else if (transcript.includes('明天天气如何')) {
+                fadeInText('3月10日武汉市6°-14°部分地区多云');
+            } else if (transcript.includes('今天天天气如何')) {
+                fadeInText('3月9日武汉市6°-14°部分地区多云');
             } else if (transcript.includes('背一句古诗')) {
+                fadeInText('春风又绿江南岸，明月何时照我还。');
+            } else if (transcript.includes('再背一句古诗')) {
                 fadeInText('从此无心爱良夜，任他明月下西楼');
             } else if (transcript.includes('你的心情怎么样')) {
                 fadeInText('(❤ ω ❤)我很开心！');  /* Replaced the emoji */
