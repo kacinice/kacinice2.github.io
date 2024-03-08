@@ -40,18 +40,32 @@
             position: absolute;
             color: white;
             font-size: 40px; /* Adjusted the size */
+            transition: opacity 0.5s ease-in-out; /* Reduced the transition time */
         }
 
         #currentTime {
             top: 10px;
             left: 10px;
-            transition: opacity 0.5s ease-in-out; /* Reduced the transition time */
         }
 
         #calendar {
             top: 70px;
             left: 10px;
-            transition: opacity 0.5s ease-in-out; /* Reduced the transition time */
+        }
+
+        /* Rainbow animation */
+        @keyframes rainbow {
+            0% { background-color: red; }
+            16% { background-color: orange; }
+            33% { background-color: yellow; }
+            50% { background-color: green; }
+            67% { background-color: blue; }
+            84% { background-color: indigo; }
+            100% { background-color: violet; }
+        }
+
+        .rainbow-background {
+            animation: rainbow 5s infinite; /* Change the animation duration as needed */
         }
     </style>
 </head>
@@ -118,8 +132,13 @@
             } else if (transcript.includes('给我的颜值打分')) {
                 const randomScore = Math.floor(Math.random() * 6) + 95;
                 fadeInText(`您的颜值分数为${randomScore}分`);
-            } else if (transcript.includes('我的精神怎么样')) {
-                fadeInText('您的精神看起来很好呢！');
+            } else if (transcript.includes('我的气色怎么样')) {
+                fadeInText('您的气色看起来很好呢！');
+            } else if (transcript.includes('变个颜色')) {
+                document.body.classList.add('rainbow-background');
+                setTimeout(() => {
+                    document.body.classList.remove('rainbow-background');
+                }, 5000); // Remove the class after 5 seconds
             }
         });
 
