@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>语音识别</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>page</title>
 
     <style>
         body {
@@ -20,16 +22,11 @@
             width: 60%;
             height: 30%;
             background-color: black;
-            border: none;
             padding: 20px;
             color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            font-size: 3.5em;  /* Adjusted the size */
+            font-size: 3.5em;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out; /* Reduced the transition time */
+            transition: opacity 0.5s ease-in-out;
             position: absolute;
             top: 50%;
             left: 50%;
@@ -39,8 +36,7 @@
         #currentTime, #calendar {
             position: absolute;
             color: white;
-            font-size: 40px; /* Adjusted the size */
-            transition: opacity 0.5s ease-in-out; /* Reduced the transition time */
+            font-size: 40px;
         }
 
         #currentTime {
@@ -53,7 +49,6 @@
             left: 10px;
         }
 
-        /* Rainbow animation */
         @keyframes rainbow {
             0% { background-color: red; }
             16% { background-color: orange; }
@@ -65,7 +60,50 @@
         }
 
         .rainbow-background {
-            animation: rainbow 5s infinite; /* Change the animation duration as needed */
+            animation: rainbow 5s infinite;
+        }
+
+        #timetable {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 15px;
+            color: white;
+            font-size: 16px;
+            width: 350px;
+            height: 33%;
+        }
+
+        #timetable table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        #timetable th, #timetable td {
+            border: 1px solid white;
+            padding: 8px;
+            text-align: center;
+            height: 50px;
+        }
+
+        #timetable th {
+            height: 50px;
+        }
+
+        #newsTicker {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            animation: breath 3s infinite alternate;
+        }
+
+        @keyframes breath {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
     </style>
 </head>
@@ -73,6 +111,8 @@
     <pre id="dialogBox"></pre>
     <div id="currentTime"></div>
     <div id="calendar"></div>
+    <div id="timetable"></div>
+    <div id="newsTicker">加载小知识中...</div>
 
     <script>
         window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -81,11 +121,12 @@
         recognition.interimResults = true;
         recognition.lang = 'zh-CN';
 
-        let dialogBox = document.querySelector('#dialogBox');
-        let currentTimeElement = document.querySelector('#currentTime');
-        let calendarElement = document.querySelector('#calendar');
+        const dialogBox = document.querySelector('#dialogBox');
+        const currentTimeElement = document.querySelector('#currentTime');
+        const calendarElement = document.querySelector('#calendar');
+        const timetableElement = document.querySelector('#timetable');
+        const newsTickerElement = document.querySelector('#newsTicker');
 
-        // Function to display current time
         function displayCurrentTime() {
             const now = new Date();
             const hours = now.getHours().toString().padStart(2, '0');
@@ -94,7 +135,6 @@
             currentTimeElement.textContent = `${hours}:${minutes}:${seconds}`;
         }
 
-        // Function to display current date
         function displayCurrentDate() {
             const now = new Date();
             const year = now.getFullYear();
@@ -103,11 +143,10 @@
             calendarElement.textContent = `${year}-${month}-${day}`;
         }
 
-        // Update time and date every second
-        setInterval(displayCurrentTime, 500); // Reduced the interval time
-        setInterval(displayCurrentDate, 500); // Reduced the interval time
-        displayCurrentTime(); // Display time initially
-        displayCurrentDate(); // Display date initially
+        setInterval(displayCurrentTime, 1000);
+        setInterval(displayCurrentDate, 1000);
+        displayCurrentTime();
+        displayCurrentDate();
 
         recognition.addEventListener('result', e => {
             const transcript = Array.from(e.results)
@@ -115,55 +154,89 @@
                 .map(result => result.transcript)
                 .join('');
 
-            if (transcript.includes('小黑')) {
-                fadeInText('上午好，先生');
-            } else if (transcript.includes('明天天气怎么样')) {
-                fadeInText('3月10日武汉市6°-14°部分地区多云');
-            } else if (transcript.includes('今天天天气怎么样')) {
-                fadeInText('3月9日武汉市6°-14°部分地区多云');
-            } else if (transcript.includes('背一句古诗')) {
-                fadeInText('春风又绿江南岸，明月何时照我还。');
-            } else if (transcript.includes('再背一句古诗')) {
-                fadeInText('从此无心爱良夜，任他明月下西楼。');
-            } else if (transcript.includes('你的心情怎么样')) {
-                fadeInText('(❤ ω ❤)我很开心！');
-            } else if (transcript.includes('我想了解武汉工程大学')) {
+            if (transcript.includes('小黑')) fadeInText('上午好，先生');
+            if (transcript.includes('明天天气怎么样')) fadeInText('10月26日武汉市16°-20°部分地区多云');
+            if (transcript.includes('今天天天气怎么样')) fadeInText('10月25日武汉市13°-23°部分地区多云');
+            if (transcript.includes('背一句古诗')) fadeInText('春风又绿江南岸，明月何时照我还。');
+            if (transcript.includes('再背一句古诗')) fadeInText('从此无心爱良夜，任他明月下西楼。');
+            if (transcript.includes('你的心情怎么样')) fadeInText('(❤ ω ❤)我很开心！');
+            if (transcript.includes('我想了解武汉工程大学')) {
                 fadeInText('武汉工程大学创建于1972年，原名湖北化工石油学院，隶属湖北省。');
-            } else if (transcript.includes('给我的颜值打分')) {
-                const randomScore = Math.floor(Math.random() * 6) + 95;
-                fadeInText(`您的颜值分数为${randomScore}分`);
-            } else if (transcript.includes('我的气色怎么样')) {
-                fadeInText('您的气色看起来很好呢！');
-            } else if (transcript.includes('变个颜色')) {
+            }
+            if (transcript.includes('给我的颜值打分')) {
+                const score = Math.floor(Math.random() * 6) + 95;
+                fadeInText(`您的颜值分数为${score}分`);
+            }
+            if (transcript.includes('我的气色怎么样')) fadeInText('您的气色看起来很好呢！');
+            if (transcript.includes('变个颜色')) {
                 document.body.classList.add('rainbow-background');
-                setTimeout(() => {
-                    document.body.classList.remove('rainbow-background');
-                }, 5000); // Remove the class after 5 seconds
+                setTimeout(() => document.body.classList.remove('rainbow-background'), 5000);
             }
         });
 
-        recognition.addEventListener('end', recognition.start);
+        recognition.addEventListener('end', () => recognition.start());
 
         recognition.start();
 
         function fadeInText(text) {
             dialogBox.textContent = text;
             dialogBox.style.opacity = '1';
-            setTimeout(() => {
-                fadeOutText();
-            }, 2000); // Adjust the delay time as needed
+            setTimeout(fadeOutText, 2000);
         }
 
         function fadeOutText() {
             dialogBox.style.opacity = '0';
-            setTimeout(() => {
-                clearText();
-            }, 1000); // After fade out, clear the text
+            setTimeout(() => dialogBox.textContent = '', 1000);
         }
 
-        function clearText() {
-            dialogBox.textContent = '';
+        function generateRandomTimetable() {
+            const subjects = ["语文", "数学", "英语", "体育", "艺术", "音乐", "思想政治"];
+            const days = ["周一", "周二", "周三", "周四", "周五"];
+            let timetableHTML = '<table><tr><th>时间</th>';
+
+            days.forEach(day => {
+                timetableHTML += `<th>${day}</th>`;
+            });
+            timetableHTML += '</tr>';
+
+            const times = ["上午第一节", "上午第二节", "上午第三节", "上午第四节", "下午第一节", "下午第二节", "下午第三节"];
+
+            times.forEach(time => {
+                timetableHTML += `<tr><td>${time}</td>`;
+                days.forEach(() => {
+                    const randomSubject = subjects[Math.floor(Math.random() * subjects.length)];
+                    timetableHTML += `<td>${randomSubject}</td>`;
+                });
+                timetableHTML += '</tr>';
+            });
+
+            timetableHTML += '</table>';
+            timetableElement.innerHTML = timetableHTML;
         }
+
+        generateRandomTimetable();
+
+        const knowledgeList = [
+            "生活小知识：每天喝八杯水有助于保持健康，但也要根据个人需求适量饮水。",
+            "数学知识：勾股定理表明，在直角三角形中，直角边平方和等于斜边的平方。",
+            "物理知识：光在不同介质中传播速度不同，因此产生了光的折射现象。",
+            "化学知识：水的化学式是H₂O，它由两个氢原子和一个氧原子组成。",
+            "生物知识：人体有超过37万亿个细胞，它们共同工作保持身体健康。",
+            "生活小知识：保持良好的坐姿有助于预防腰背疼痛。",
+            "数学知识：素数是只能被1和它自身整除的数字，例如2、3、5、7。",
+            "物理知识：声音是一种振动，通过空气等介质传播，速度约为每秒340米。",
+            "化学知识：氧气是我们呼吸所需的气体，约占空气体积的21%。",
+            "生物知识：光合作用是植物将光能转化为化学能的过程，产生氧气。"
+        ];
+
+        let currentKnowledgeIndex = 0;
+        function updateKnowledge() {
+            newsTickerElement.textContent = knowledgeList[currentKnowledgeIndex];
+            currentKnowledgeIndex = (currentKnowledgeIndex + 1) % knowledgeList.length;
+        }
+
+        setInterval(updateKnowledge, 5000);
+        updateKnowledge();
     </script>
 </body>
 </html>
